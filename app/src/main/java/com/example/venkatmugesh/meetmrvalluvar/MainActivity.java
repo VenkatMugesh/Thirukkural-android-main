@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
         viewKural = (Button)findViewById(R.id.viewKural);
         playGame = (Button)findViewById(R.id.playGame);
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 17);
-        calendar.set(Calendar.MINUTE, 25);
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+        calendar.set(Calendar.MINUTE, 00);
         calendar.set(Calendar.SECOND, 0);
         Intent intent1 = new Intent(MainActivity.this, AlarmReciever.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         playGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this , PlayGame.class);
+                Intent i = new Intent(MainActivity.this , PlayGameMain.class);
                 startActivity(i);
             }
         });

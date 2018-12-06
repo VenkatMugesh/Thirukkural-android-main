@@ -29,11 +29,27 @@ public class OfflineDataBase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        /*அகர முதல எழுத்தெல்லாம் ஆதி
+        பகவன் முதற்றே உலகு*/
+        int kno = 1;
+        String line1 = "அகர முதல எழுத்தெல்லாம் ஆதி";
+        String line2 = "பகவன் முதற்றே உலகு";
+        String trans = "A leads letters;the Ancient Lord Leads and lords the entire world";
+
         String createTable = "CREATE TABLE " + TABLE_NAME +"(" + COL1  +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
                 COL2 +" TEXT, " + COL3 + " TEXT," + COL4 + " TEXT, " + COL5 + " TEXT)";
 
+
         db.execSQL(createTable);
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(COL2, kno);
+        contentValues.put(COL3, line1);
+        contentValues.put(COL4, line2);
+        contentValues.put(COL5, trans);
+        db.insert(TABLE_NAME, null, contentValues);
         dataFetcher = new DataFetcher();
     }
 

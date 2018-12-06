@@ -7,11 +7,9 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,20 +22,19 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class KuralSearch extends AppCompatActivity {
+public class KuralSelect extends AppCompatActivity {
 
-    EditText searchEdit;
-    TextView searchLine1;
-    TextView searchLine2;
-    TextView searchTrans;
-    TextView transView2;
-    Button searchOffline;
-    String kuralNumber3 = "";
+    TextView selectLine1;
+    TextView selectLine2;
+    TextView paal;
+    TextView athikaaram;
+    int kuNo;
+    Button saveSelectOffline;
     String Line1 = "";
     String Line2 = "";
     String trans = "";
-    int kurNo;
-    OfflineDataBase myDb;
+    OfflineDataBase muDb;
+
     boolean internet_connection() {
         ConnectivityManager cm =
                 (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -47,43 +44,72 @@ public class KuralSearch extends AppCompatActivity {
                 activeNetwork.isConnectedOrConnecting();
         return isConnected;
     }
-    public void saveOffline(View view){
-        boolean adding = myDb.addData(kuralNumber3 , Line1 , Line2 ,trans);
+
+    public void selectOffline(View view){
+        boolean adding = muDb.addData(String.valueOf(kuNo), Line1 , Line2 ,trans);
         if (adding)
         {
-            Toast.makeText(KuralSearch.this , "Saved Successfully..!!" , Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public void searchKural(View view){
-        if(internet_connection()){
-            transView2.setVisibility(View.VISIBLE);
-            searchOffline.setVisibility(View.VISIBLE);
-            kuralNumber3 = String.valueOf(searchEdit.getText());
-            kurNo = Integer.parseInt(kuralNumber3);
-            Log.i("number" , String.valueOf(kurNo));
-            if(kurNo > 1330){
-                Toast.makeText(KuralSearch.this , "Enter a Valid Kural Number" , Toast.LENGTH_LONG).show();
-            }else {
-                DownloadTask task = new DownloadTask();
-                task.execute("https://getthirukkural.appspot.com/api/2.0/kural/" +kurNo+ "?appid=vtzhxktz2hhiu&format=json");
-            }
-        }else {
-            Toast.makeText(KuralSearch.this , "No Internet Connection" , Toast.LENGTH_LONG).show();
+            Toast.makeText(KuralSelect.this , "Saved Successfully..!!" , Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_kural_search);
-        searchEdit = (EditText)findViewById(R.id.editText2);
-        searchLine1 = (TextView)findViewById(R.id.Searchline1);
-        searchLine2 = (TextView)findViewById(R.id.Searchline2);
-        searchTrans = (TextView)findViewById(R.id.transSearch);
-        transView2 = (TextView)findViewById(R.id.transView2);
-        searchOffline = (Button)findViewById(R.id.saveSearch);
-        myDb = new OfflineDataBase(this);
+        setContentView(R.layout.activity_kural_select);
+        selectLine1 = (TextView) findViewById(R.id.selectLineText);
+        selectLine2 = (TextView) findViewById(R.id.selectLineText2);
+        paal = (TextView) findViewById(R.id.paalText);
+        athikaaram = (TextView) findViewById(R.id.athikaaramText);
+        saveSelectOffline = (Button) findViewById(R.id.selectOffline);
+        muDb = new OfflineDataBase(this);
+
+        selectLine1.setVisibility(View.INVISIBLE);
+        selectLine2.setVisibility(View.INVISIBLE);
+        paal.setVisibility(View.INVISIBLE);
+        athikaaram.setVisibility(View.INVISIBLE);
+        saveSelectOffline.setVisibility(View.INVISIBLE);
+
+
+        String paalValue;
+        String athikaaramValue;
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                kuNo = 0;
+                paalValue = null;
+                athikaaramValue = null;
+
+            } else {
+
+                kuNo = extras.getInt("value");
+                paalValue = extras.getString("paal");
+                athikaaramValue = extras.getString("athikaaram");
+            }
+        } else {
+            kuNo = (int) savedInstanceState.getSerializable("value");
+            paalValue = (String) savedInstanceState.getSerializable("paal");
+            athikaaramValue = (String) savedInstanceState.getSerializable("athikaaram");
+        }
+
+        if (internet_connection()){
+
+            selectLine1.setVisibility(View.VISIBLE);
+            selectLine2.setVisibility(View.VISIBLE);
+            paal.setVisibility(View.VISIBLE);
+            athikaaram.setVisibility(View.VISIBLE);
+            saveSelectOffline.setVisibility(View.VISIBLE);
+
+            paal.setText("பால் : " + paalValue);
+            athikaaram.setText("அதிகாரம் : " + athikaaramValue);
+
+            KuralSelect.DownloadTask task = new KuralSelect.DownloadTask();
+            task.execute("https://getthirukkural.appspot.com/api/2.0/kural/" +kuNo+ "?appid=vtzhxktz2hhiu&format=json");
+
+        }else {
+
+            Toast.makeText(KuralSelect.this , "No Internet Connection" , Toast.LENGTH_LONG).show();
+        }
 
 
     }
@@ -160,9 +186,8 @@ public class KuralSearch extends AppCompatActivity {
 
 
 
-                    searchTrans.setText(trans);
-                    searchLine1.setText(Line1);
-                    searchLine2.setText(Line2);
+                    selectLine1.setText(Line1);
+                    selectLine2.setText(Line2);
 
                 }
 

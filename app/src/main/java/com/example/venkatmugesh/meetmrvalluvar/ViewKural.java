@@ -136,7 +136,7 @@ public class ViewKural extends AppCompatActivity {
                         break;
 
                     case R.id.playGame :
-                        Intent intent3 = new Intent(ViewKural.this , PlayGame.class);
+                        Intent intent3 = new Intent(ViewKural.this , PlayGameMain.class);
                         startActivity(intent3);
                         break;
 
